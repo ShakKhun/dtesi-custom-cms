@@ -22,7 +22,6 @@ export function SiteHeader({ currentPath, sharedEntries }: Props) {
 
   return (
     <header className="border-b border-white/10 bg-stone-950/90 backdrop-blur">
-      <h1>hello</h1>
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-2">
           <p className="text-xs uppercase tracking-[0.35em] text-amber-300/80">
