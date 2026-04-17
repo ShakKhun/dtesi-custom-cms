@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useRouterState } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
 
 const ErrorComponent = () => {
+  const router = useRouterState()
+
   return (
     <div
       className="flex min-h-screen items-center justify-center flex-col p-4"
@@ -18,6 +20,9 @@ const ErrorComponent = () => {
 
       <p className="text-lg text-muted-foreground mb-4 text-center z-10">
         Something went wrong. Please try again.
+      </p>
+      <p className="mb-4 max-w-xl text-center text-sm text-muted-foreground/80">
+        Path: {router.location.pathname}
       </p>
       <Link to="/">
         <Button>Go Home</Button>

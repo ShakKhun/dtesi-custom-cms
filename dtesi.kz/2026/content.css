@@ -1,0 +1,11 @@
+.content-info-box {
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.content-info-box h3 {
+    margin: 0;
+    font-family: Helvetica, sans-serif;
+    border-bottom: 1px solid #dbdbdb;
+    padding-bottom: 10px;
+}

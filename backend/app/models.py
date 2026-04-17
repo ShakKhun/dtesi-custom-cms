@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime, timezone
+from typing import Any
 
 from pydantic import EmailStr
-from sqlalchemy import DateTime
+from sqlalchemy import JSON, Column, DateTime, UniqueConstraint
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -106,6 +107,55 @@ class ItemPublic(ItemBase):
 class ItemsPublic(SQLModel):
     data: list[ItemPublic]
     count: int
+
+
+class ContentBlockBase(SQLModel):
+    scope: str = Field(min_length=1, max_length=50, index=True)
+    slug: str = Field(min_length=1, max_length=100, index=True)
+    title: str = Field(min_length=1, max_length=255)
+    content: dict[str, Any] = Field(
+        default_factory=dict,
+        sa_column=Column(JSON, nullable=False),
+    )
+
+
+class ContentBlockCreate(ContentBlockBase):
+    pass
+
+
+class ContentBlockUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    content: dict[str, Any] | None = None
+
+
+class ContentBlock(ContentBlockBase, table=True):
+    __table_args__ = (UniqueConstraint("scope", "slug", name="uq_content_block_scope_slug"),)
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    updated_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+
+
+class ContentBlockPublic(ContentBlockBase):
+    id: uuid.UUID
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+class ContentBlocksPublic(SQLModel):
+    data: list[ContentBlockPublic]
+    count: int
+
+
+class ContentBundlePublic(SQLModel):
+    page: ContentBlockPublic | None = None
+    shared: list[ContentBlockPublic] = Field(default_factory=list)
 
 
 # Generic message
