@@ -45,6 +45,16 @@ export const CONTENT_FIELDS: Record<string, ContentField[]> = {
     { key: "venue_title", label: "Venue title", type: "text" },
     { key: "venue_body", label: "Venue body", type: "textarea" },
   ],
+  "page/speakers": [
+    { key: "hero_title", label: "Hero title", type: "text" },
+    { key: "hero_subtitle", label: "Hero subtitle", type: "textarea" },
+    { key: "intro_title", label: "Intro title", type: "text" },
+    { key: "intro_body", label: "Intro body", type: "textarea" },
+    { key: "speakers_title", label: "Speakers title", type: "text" },
+    { key: "speakers", label: "Speakers", type: "list" },
+    { key: "notes_title", label: "Notes title", type: "text" },
+    { key: "notes_body", label: "Notes body", type: "textarea" },
+  ],
 }
 
 export function getContentFieldKey(block: Pick<ContentBlock, "scope" | "slug">) {

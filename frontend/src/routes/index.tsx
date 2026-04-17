@@ -1,8 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { CalendarDays, MapPin, ScrollText } from "lucide-react"
 
+import { ImportantDatesCard } from "@/components/Site/ImportantDatesCard"
+import { SiteFooter } from "@/components/Site/SiteFooter"
+import { SiteHeader } from "@/components/Site/SiteHeader"
 import { getContentBundle } from "@/lib/content-api"
+import { asText, asTextList, getSharedContentEntries } from "@/lib/site-content"
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -22,71 +26,14 @@ function HomePage() {
   })
 
   const page = data?.page?.content ?? {}
-  const sharedEntries = Object.fromEntries(
-    (data?.shared ?? []).map((block) => [block.slug, block.content]),
-  )
-  const navigation = sharedEntries.navigation ?? {}
-  const header = sharedEntries.header ?? {}
-  const footer = sharedEntries.footer ?? {}
-  const dates = sharedEntries["important-dates"] ?? {}
-
-  const asText = (value: unknown, fallback = "") =>
-    typeof value === "string" ? value : fallback
-
-  const asTextList = (value: unknown) =>
-    Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : []
-
-  const navItems = [
-    asText(navigation.home_label),
-    asText(navigation.speakers_label),
-    asText(navigation.registration_label),
-    asText(navigation.program_label),
-    asText(navigation.venue_label),
-    asText(navigation.proceedings_label),
-  ].filter((item) => item.length > 0)
+  const sharedEntries = getSharedContentEntries(data)
 
   const workshops = asTextList(page.workshops)
-  const importantDates = asTextList(dates.items)
+  const footer = sharedEntries.footer ?? {}
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100">
-      <header className="border-b border-white/10 bg-stone-950/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.35em] text-amber-300/80">
-              {asText(header.eyebrow, "International Conference")}
-            </p>
-            <div>
-              <h1 className="font-serif text-2xl text-white sm:text-3xl">
-                {asText(header.site_name, "DTESI 2025")}
-              </h1>
-              <p className="max-w-2xl text-sm text-stone-300 sm:text-base">
-                {asText(
-                  header.tagline,
-                  "Digital Technologies in Education, Science and Industry",
-                )}
-              </p>
-            </div>
-          </div>
-
-          <nav className="flex flex-wrap gap-2 text-sm text-stone-300">
-            {navItems.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-white/10 px-3 py-1.5"
-              >
-                {item}
-              </span>
-            ))}
-            <Link
-              to="/login"
-              className="rounded-full bg-amber-300 px-3 py-1.5 font-medium text-stone-950"
-            >
-              Admin login
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader currentPath="/" sharedEntries={sharedEntries} />
 
       <main className="mx-auto grid max-w-7xl gap-8 px-6 py-10 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section className="space-y-6">
@@ -160,18 +107,7 @@ function HomePage() {
         </section>
 
         <aside className="space-y-6">
-          <section className="rounded-[1.5rem] border border-white/10 bg-amber-300/10 p-6">
-            <h3 className="font-serif text-2xl text-white">
-              {asText(dates.title, "Important dates")}
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm leading-7 text-amber-50/90">
-              {importantDates.map((item) => (
-                <li key={item} className="border-b border-white/10 pb-3 last:border-0">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </section>
+          <ImportantDatesCard sharedEntries={sharedEntries} />
 
           <section className="rounded-[1.5rem] border border-white/10 bg-white/5 p-6 text-sm text-stone-300">
             <h3 className="font-serif text-2xl text-white">
@@ -184,19 +120,7 @@ function HomePage() {
         </aside>
       </main>
 
-      <footer className="border-t border-white/10 bg-stone-950">
-        <div className="mx-auto grid max-w-7xl gap-4 px-6 py-8 text-sm text-stone-400 md:grid-cols-3">
-          <p>{asText(footer.copyright_text, "DTESI Conference")}</p>
-          <p>
-            {asText(footer.contact_label, "Contact")}:{" "}
-            {asText(footer.contact_value, "dtesi@iitu.edu.kz")}
-          </p>
-          <p>
-            {asText(footer.location_label, "Location")}:{" "}
-            {asText(footer.location_value, "Almaty, Kazakhstan")}
-          </p>
-        </div>
-      </footer>
+      <SiteFooter sharedEntries={sharedEntries} />
     </div>
   )
 }

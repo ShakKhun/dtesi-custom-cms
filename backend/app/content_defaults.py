@@ -87,4 +87,32 @@ def get_default_content_blocks() -> list[dict[str, Any]]:
                 ),
             },
         },
+        {
+            "scope": "page",
+            "slug": "speakers",
+            "title": "Speakers Page",
+            "content": {
+                "hero_title": "Speakers",
+                "hero_subtitle": (
+                    "Meet the invited speakers, session chairs, and guests of "
+                    "DTESI 2025."
+                ),
+                "intro_title": "Featured guests",
+                "intro_body": (
+                    "This page can be used for keynote speakers, workshop "
+                    "moderators, panel guests, or program committee highlights."
+                ),
+                "speakers_title": "Speaker list",
+                "speakers": [
+                    "Prof. Aigerim Sarsenova - AI in Education",
+                    "Dr. Timur Kassenov - Smart Industry Systems",
+                    "Prof. Laura Chen - Cybersecurity and Trust",
+                ],
+                "notes_title": "Notes",
+                "notes_body": (
+                    "You can later replace this simple list with richer speaker "
+                    "cards, affiliations, photos, and profile links."
+                ),
+            },
+        },
     ]

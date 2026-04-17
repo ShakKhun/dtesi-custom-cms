@@ -57,7 +57,7 @@ function ContentRoute() {
     onSuccess: () => {
       showSuccessToast("Content updated")
       queryClient.invalidateQueries({ queryKey: ["contentBlocks"] })
-      queryClient.invalidateQueries({ queryKey: ["contentBundle", "home"] })
+      queryClient.invalidateQueries({ queryKey: ["contentBundle"] })
     },
     onError: (error) => {
       showErrorToast(error.message)
