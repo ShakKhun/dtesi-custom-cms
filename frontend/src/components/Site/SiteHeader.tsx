@@ -1,83 +1,148 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router";
 
-import { asText, type SharedContentEntries } from "@/lib/site-content"
+import { asText, type SharedContentEntries } from "@/lib/site-content";
 
 type Props = {
-  currentPath: "/" | "/speakers"
-  sharedEntries: SharedContentEntries
-}
+	currentPath: "/" | "/speakers";
+	sharedEntries: SharedContentEntries;
+};
 
 export function SiteHeader({ currentPath, sharedEntries }: Props) {
-  const navigation = sharedEntries.navigation ?? {}
-  const header = sharedEntries.header ?? {}
+	const navigation = sharedEntries.navigation ?? {};
+	const header = sharedEntries.header ?? {};
 
-  const navItems = [
-    { label: asText(navigation.home_label), to: "/" as const },
-    { label: asText(navigation.speakers_label), to: "/speakers" as const },
-    { label: asText(navigation.registration_label), to: undefined },
-    { label: asText(navigation.program_label), to: undefined },
-    { label: asText(navigation.venue_label), to: undefined },
-    { label: asText(navigation.proceedings_label), to: undefined },
-  ].filter((item) => item.label.length > 0)
+	const navItems = [
+		{ label: asText(navigation.home_label), to: "/" as const },
+		{ label: asText(navigation.speakers_label), to: "/speakers" as const },
+		{ label: asText(navigation.registration_label), to: undefined },
+		{ label: asText(navigation.program_label), to: undefined },
+		{ label: asText(navigation.venue_label), to: undefined },
+		{ label: asText(navigation.proceedings_label), to: undefined },
+	].filter((item) => item.label.length > 0);
 
-  return (
-    <header className="border-b border-white/10 bg-stone-950/90 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.35em] text-amber-300/80">
-            {asText(header.eyebrow, "International Conference")}
-          </p>
-          <div>
-            <h1 className="font-serif text-2xl text-white sm:text-3xl">
-              {asText(header.site_name, "DTESI 2025")}
-            </h1>
-            <p className="max-w-2xl text-sm text-stone-300 sm:text-base">
-              {asText(
-                header.tagline,
-                "Digital Technologies in Education, Science and Industry",
-              )}
-            </p>
-          </div>
-        </div>
+	return (
+		// <header className="border-b border-white/10 bg-stone-950/90 backdrop-blur">
+		//   <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+		//     <div className="space-y-2">
+		//       <p className="text-xs uppercase tracking-[0.35em] text-amber-300/80">
+		//         {asText(header.eyebrow, "International Conference")}
+		//       </p>
+		//       <div>
+		//         <h1 className="font-serif text-2xl text-white sm:text-3xl">
+		//           {asText(header.site_name, "DTESI 2025")}
+		//         </h1>
+		//         <p className="max-w-2xl text-sm text-stone-300 sm:text-base">
+		//           {asText(
+		//             header.tagline,
+		//             "Digital Technologies in Education, Science and Industry",
+		//           )}
+		//         </p>
+		//       </div>
+		//     </div>
 
-        <nav className="flex flex-wrap gap-2 text-sm text-stone-300">
-          {navItems.map((item) => {
-            if (!item.to) {
-              return (
-                <span
-                  key={item.label}
-                  className="rounded-full border border-white/10 px-3 py-1.5"
-                >
-                  {item.label}
-                </span>
-              )
-            }
+		//     <nav className="flex flex-wrap gap-2 text-sm text-stone-300">
+		//       {navItems.map((item) => {
+		//         if (!item.to) {
+		//           return (
+		//             <span
+		//               key={item.label}
+		//               className="rounded-full border border-white/10 px-3 py-1.5"
+		//             >
+		//               {item.label}
+		//             </span>
+		//           )
+		//         }
 
-            const isActive = item.to === currentPath
+		//         const isActive = item.to === currentPath
 
-            return (
-              <Link
-                key={item.label}
-                to={item.to}
-                className={
-                  isActive
-                    ? "rounded-full bg-amber-300 px-3 py-1.5 font-medium text-stone-950"
-                    : "rounded-full border border-white/10 px-3 py-1.5 hover:bg-white/5"
-                }
-              >
-                {item.label}
-              </Link>
-            )
-          })}
+		//         return (
+		//           <Link
+		//             key={item.label}
+		//             to={item.to}
+		//             className={
+		//               isActive
+		//                 ? "rounded-full bg-amber-300 px-3 py-1.5 font-medium text-stone-950"
+		//                 : "rounded-full border border-white/10 px-3 py-1.5 hover:bg-white/5"
+		//             }
+		//           >
+		//             {item.label}
+		//           </Link>
+		//         )
+		//       })}
 
-          <Link
-            to="/login"
-            className="rounded-full border border-white/10 px-3 py-1.5 hover:bg-white/5"
-          >
-            Admin login
-          </Link>
-        </nav>
-      </div>
-    </header>
-  )
+		//       <Link
+		//         to="/login"
+		//         className="rounded-full border border-white/10 px-3 py-1.5 hover:bg-white/5"
+		//       >
+		//         Admin login
+		//       </Link>
+		//     </nav>
+		//   </div>
+		// </header>
+		<header>
+			{/* <nav>
+				<a href="index.html" class="nav-active">
+					<div>home</div>
+				</a>
+				<a href="papers.html">
+					<div>Call for papers</div>
+				</a>
+				<a href="speakers.html">
+					<div>Speakers</div>
+				</a>
+				<a href="registration.html">
+					<div>Registration</div>
+				</a>
+				<a href="program.html">
+					<div>program</div>
+				</a>
+				<a href="venue.html">
+					<div>venue</div>
+				</a>
+				<a href="certificates.html">
+					<div>Proceedings</div>
+				</a>
+				<a href="archive.html">
+					<div>archive</div>
+				</a>
+			</nav> */}
+			<Link
+				to="/login"
+				className="rounded-full border border-white/10 px-3 py-1.5 hover:bg-white/5"
+			>
+				Admin login
+			</Link>
+
+			<nav>
+				{navItems.map((item) => {
+					if (!item.to) {
+						return (
+							<span
+								key={item.label}
+								className="rounded-full border border-white/10 px-3 py-1.5"
+							>
+								{item.label}
+							</span>
+						);
+					}
+
+					const isActive = item.to === currentPath;
+
+					return (
+						<Link
+							key={item.label}
+							to={item.to}
+							className={
+								isActive
+									? "rounded-full bg-amber-300 px-3 py-1.5 font-medium text-stone-950"
+									: "rounded-full border border-white/10 px-3 py-1.5 hover:bg-white/5"
+							}
+						>
+							{item.label}
+						</Link>
+					);
+				})}
+			</nav>
+		</header>
+	);
 }
