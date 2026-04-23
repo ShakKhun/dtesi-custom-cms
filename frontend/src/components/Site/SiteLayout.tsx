@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 
+import type { SitePage } from "@/lib/content-api"
 import type { SharedContentEntries } from "@/lib/site-content"
 import { cn } from "@/lib/utils"
 
@@ -10,6 +11,7 @@ import { SiteHeader } from "./SiteHeader"
 type Props = {
   children: ReactNode
   currentPath: string
+  navigationPages: SitePage[]
   sharedEntries: SharedContentEntries
   sidebar?: ReactNode
   contentClassName?: string
@@ -20,6 +22,7 @@ type Props = {
 export function SiteLayout({
   children,
   currentPath,
+  navigationPages,
   sharedEntries,
   sidebar,
   contentClassName,
@@ -29,7 +32,11 @@ export function SiteLayout({
   return (
     <div className="min-h-screen bg-[#f1f1f1] text-[#333]">
       <div className="main-container">
-        <SiteHeader currentPath={currentPath} sharedEntries={sharedEntries} />
+        <SiteHeader
+          currentPath={currentPath}
+          navigationPages={navigationPages}
+          sharedEntries={sharedEntries}
+        />
 
         <main
           className={cn(
@@ -37,13 +44,13 @@ export function SiteLayout({
             mainClassName,
           )}
         >
-          <section className={cn("min-w-0 flex-1", contentClassName)}>
+          <section className={cn("min-w-0 flex-1 pt-8", contentClassName)}>
             {children}
           </section>
 
           <aside
             className={cn(
-              "w-full space-y-6 lg:max-w-[300px] lg:shrink-0 lg:border-l lg:border-[#dbdbdb] lg:pl-6",
+              "w-full space-y-6 lg:max-w-[300px] lg:shrink-0 lg:border-l lg:border-[#dbdbdb] pt-8 ",
               sidebarClassName,
             )}
           >

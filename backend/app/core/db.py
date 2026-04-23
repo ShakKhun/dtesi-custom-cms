@@ -1,9 +1,18 @@
 from sqlmodel import Session, create_engine, select
 
 from app import crud
-from app.content_defaults import get_default_content_blocks
+from app.content_defaults import get_default_content_blocks, get_default_pages
 from app.core.config import settings
-from app.models import ContentBlock, ContentBlockCreate, User, UserCreate
+from app.models import (
+    ContentBlock,
+    ContentBlockCreate,
+    Page,
+    PageCreate,
+    PageSection,
+    PageSectionCreate,
+    User,
+    UserCreate,
+)
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -43,5 +52,30 @@ def init_db(session: Session) -> None:
             continue
         block = ContentBlock.model_validate(ContentBlockCreate(**block_data))
         session.add(block)
+
+    existing_pages = {page.slug: page for page in session.exec(select(Page)).all()}
+    for page_definition in get_default_pages():
+        page_data = {key: value for key, value in page_definition.items() if key != "sections"}
+        sections_data = page_definition["sections"]
+        page = existing_pages.get(page_data["slug"])
+        if not page:
+            page = Page.model_validate(PageCreate(**page_data))
+            session.add(page)
+            session.flush()
+
+        existing_section_titles = {
+            section.title
+            for section in session.exec(
+                select(PageSection).where(PageSection.page_id == page.id)
+            ).all()
+        }
+        for section_data in sections_data:
+            if section_data["title"] in existing_section_titles:
+                continue
+            section = PageSection.model_validate(
+                PageSectionCreate(**section_data),
+                update={"page_id": page.id},
+            )
+            session.add(section)
 
     session.commit()

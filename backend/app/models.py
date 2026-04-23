@@ -153,9 +153,118 @@ class ContentBlocksPublic(SQLModel):
     count: int
 
 
-class ContentBundlePublic(SQLModel):
-    page: ContentBlockPublic | None = None
+class PageBase(SQLModel):
+    slug: str = Field(min_length=1, max_length=100, index=True)
+    title: str = Field(min_length=1, max_length=255)
+    navigation_title: str = Field(min_length=1, max_length=255)
+    show_in_navigation: bool = True
+    navigation_order: int = 0
+    is_home: bool = False
+
+
+class PageCreate(PageBase):
+    pass
+
+
+class PageUpdate(SQLModel):
+    slug: str | None = Field(default=None, min_length=1, max_length=100)
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    navigation_title: str | None = Field(default=None, min_length=1, max_length=255)
+    show_in_navigation: bool | None = None
+    navigation_order: int | None = None
+    is_home: bool | None = None
+
+
+class Page(PageBase, table=True):
+    __table_args__ = (UniqueConstraint("slug", name="uq_page_slug"),)
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    updated_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    sections: list["PageSection"] = Relationship(
+        back_populates="page",
+        cascade_delete=True,
+    )
+
+
+class PagePublic(PageBase):
+    id: uuid.UUID
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+class PagesPublic(SQLModel):
+    data: list[PagePublic]
+    count: int
+
+
+class PageSectionBase(SQLModel):
+    kind: str = Field(min_length=1, max_length=50)
+    title: str = Field(min_length=1, max_length=255)
+    position: int = 0
+    content: dict[str, Any] = Field(
+        default_factory=dict,
+        sa_column=Column(JSON, nullable=False),
+    )
+
+
+class PageSectionCreate(PageSectionBase):
+    pass
+
+
+class PageSectionUpdate(SQLModel):
+    kind: str | None = Field(default=None, min_length=1, max_length=50)
+    title: str | None = Field(default=None, min_length=1, max_length=255)
+    position: int | None = None
+    content: dict[str, Any] | None = None
+
+
+class PageSection(PageSectionBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    page_id: uuid.UUID = Field(
+        foreign_key="page.id",
+        nullable=False,
+        ondelete="CASCADE",
+        index=True,
+    )
+    created_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    updated_at: datetime | None = Field(
+        default_factory=get_datetime_utc,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    page: Page | None = Relationship(back_populates="sections")
+
+
+class PageSectionPublic(PageSectionBase):
+    id: uuid.UUID
+    page_id: uuid.UUID
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+class CmsPagePublic(PagePublic):
+    sections: list["PageSectionPublic"] = Field(default_factory=list)
+
+
+class CmsAdminPublic(SQLModel):
     shared: list[ContentBlockPublic] = Field(default_factory=list)
+    pages: list[CmsPagePublic] = Field(default_factory=list)
+
+
+class ContentBundlePublic(SQLModel):
+    page: PagePublic | None = None
+    shared: list[ContentBlockPublic] = Field(default_factory=list)
+    navigation: list[PagePublic] = Field(default_factory=list)
+    sections: list[PageSectionPublic] = Field(default_factory=list)
 
 
 # Generic message
